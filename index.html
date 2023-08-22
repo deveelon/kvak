@@ -1,0 +1,552 @@
+<?php
+require("connect.php");
+session_start();
+//unset($_SESSION['login']);
+//unset($_SESSION['hash']);
+
+if(isset($_SERVER['HTTPS'])) {
+    $is_http = "https";
+}
+if(!isset($_SERVER['HTTPS'])) {
+    $is_http = "http";
+}
+$loginned = $_SESSION['login'];
+$sidhash = $_SESSION['hash'];
+
+if ( $loginned == 1 && !empty($sidhash)){
+
+$selectuser = mysql_query("SELECT * FROM `engmn_user` WHERE hash='$sidhash'");
+$usr = mysql_fetch_array($selectuser);
+
+if ( $usr ){
+
+$uid = $usr['id'];
+$uname = $usr['name'];
+$balance = $usr['balance'];
+$prava = $usr['prava'];
+}
+
+$onlinenow = mysql_num_rows(mysql_query("SELECT * FROM engmn_user WHERE online = 1"));
+
+}
+
+?>
+<!DOCTYPE html>
+    <html lang="en">
+    <head>
+
+    <!-- TITLE -->
+
+    <title><?=$sitename?> - Браузерная игра на реальные деньги</title>
+
+	<!-- META -->
+
+    <meta charset="UTF-8">
+	<meta content="Сервис быстрых лотерей оригинал, Играйте и выигрывайте! Захватывающая онлайн игра с выводом реальных денег, которая увлечет всех." name="description">
+	<meta content="6ac7c8af13015f7434e509472423607563002fb1dae1bc165be24ba5e6511e4c7046f04380bac2ccb6ae7" name="keywords">
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1">
+	<meta content="YU7ZAtqydUm47yTxpOeIsIggNeAme8UZXnJ66lCc" name="csrf-token">
+
+	<!-- CSS -->
+
+    <link rel="icon" type="image/png" href="/img/logo.png">
+	<link rel="stylesheet" href="//cdn.materialdesignicons.com/3.9.97/css/materialdesignicons.min.css">
+	<link rel="stylesheet" href="/css/sheet.css">
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,400italic" rel="stylesheet">
+    <link href="/css/toolkit-inverse.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://ned.im/noty/v2/vendor/animate.css" />
+    <link href="/css/application.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Jura:300,400,500,600,700" rel="stylesheet">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
+
+    <!-- JS -->
+
+	<script type="text/javascript" src="/js/jquery-1.9.1.js"></script>
+	<script type="text/javascript" src="https://ned.im/noty/v2/vendor/jquery-1.10.2.min.js"></script>
+	<script type="text/javascript" src="https://ned.im/noty/v2/vendor/noty-2.4.1/js/noty/packaged/jquery.noty.packaged.js"></script>
+	<script type="text/javascript" src="https://ned.im/noty/v2/vendor/google-code-prettify/prettify.js"></script>
+    <script type="text/javascript" src="https://ned.im/noty/v2/vendor/share.min.js"></script>
+    <script type="text/javascript" src="https://ned.im/noty/v2/vendor/showdown/showdown.min.js"></script>
+	<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+    <script type="text/javascript" src="/js/jquery.slimscroll.min.js"></script>
+    <script type="text/javascript" src="/js/jquery.cookie.js"></script>
+    <script type="text/javascript" src="/js/jquery.kinetic.min.js"></script>
+<script type="text/javascript" src="/js/script.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+<script type="text/javascript" src="/js/func.js"></script>
+
+	    </head>
+	<body style="background: #20242d">
+
+<div id="openLogin" class="modalDialog">
+  <div style="background: #20242d">
+
+<a style="background: #20242d" class="name1">Авторизация</a>
+
+    <a style="background: #20242d" href="#close1" title="Закрыть" class="close1">X</a>
+<br>
+
+
+<div id="uLogin" data-ulogin="display=buttons;fields=photo_big,first_name,last_name;mobilebuttons=0;redirect_uri=<?=$is_http?>%3A%2F%2F<?=$_SERVER['HTTP_HOST']?>/vklogin.php;"><a data-uloginbutton="vkontakte" href="#close1" style="text-decoration: none;"><div style="margin-bottom: -15px;width: 100%;" class="btn-pay112">Войти через ВКонтакте</div></a></div>
+
+                              <script src="//ulogin.ru/js/ulogin.js"></script>
+
+<br>
+<!--<center>
+<span>или</span>
+</center>
+<br>
+<div style="margin-top: -15px;">
+ <form role="form" action="/login" method="GET">
+<div class="test12">
+    <input type="text" style="width: 100%;" placeholder="логин" name="login" maxlength="15">
+
+     </div>
+
+  <div class="test12">
+    <input type="password" style="width: 100%;" placeholder="пароль" name="password" maxlength="15">
+
+     </div>
+
+<button type="submit" style="width: 100%;" class="buttonin goPay btn-pay">Войти</button>
+  </form>
+  <br>
+  <div style="margin-top: -15px;">
+<center>
+<a style="color: #fff" href="#openRegister">регистрация</a>
+</center>-->
+  </div>
+    </div>
+<div id="ohsnap"></div>
+<div class="bqh">
+
+  <nav style="background-color: #1c2028" class="ch">
+
+
+
+<div class="nav12">
+	        <div style="width: 100%;background: #000; position: fixed; /* Set the navbar to fixed position */
+  top: 0; /* Position the navbar at the top of the page */
+  width: 100%; /* Full width */ z-index: 3">
+			 <?php if ( $_SESSION['login'] != 1 || empty($_SESSION['hash']) ){ ?>
+   <center> <a href="#openLogin"><span style="margin-left: 7px; color: #fff;">Авторизация</span></a>  </center>
+    <? }else{ ?>
+ <a href="/profile"> <span style="margin-left: 7px;color: #fff"><?=$uname?></span> <span class="badge badge-primary" style="margin-left: 10px">ПРОФИЛЬ</span></a><?php if ( $prava == 1 ){ ?> <a href="/admin"><span class="badge badge-primary" style="background-color: red;margin-left: 10px">А-П</span></a> <? } ?>
+
+   <span style="position: absolute; right: 0; margin-right: 7px;color: #fff" class="money"><?=$balance?> coin</span></span>
+<? } ?>
+
+
+
+
+			</div>
+			</div>
+
+
+
+
+
+
+
+
+<div class="nav13">
+<br>
+</div>
+
+
+
+
+
+    <div class="bqm">
+      	<style>
+.pa {
+  cursor: pointer;
+}
+</style>
+
+      <ul class="nav pb bqk zh">
+
+
+	        <li class="pa">
+          <a class="oy" href="/" data-toggle="tooltip" data-placement="right" data-container="body">
+            <img style="width: 49px;margin-left: -4px" src="/img/logo.png">
+          </a>
+        </li>
+
+
+
+
+        <li class="pa pve">
+          <a class="oy" href="/wheel" title="Wheel Game" data-toggle="tooltip" data-placement="right" data-container="body">
+            <span class="far fa-circle"></span>
+            <small class="bql vi">Wheel Game</small>
+          </a>
+        </li>
+        <li class="pa pve">
+          <a class="oy" href="/battle" title="Battle Game" data-toggle="tooltip" data-placement="right" data-container="body">
+            <span class="fas fa-circle-notch"></span>
+            <small class="bql vi">Battle Game</small>
+          </a>
+        </li>
+
+
+
+        <li class="pa pve">
+          <a class="oy" href="/dice" title="Dice Game" data-toggle="tooltip" data-placement="right" data-container="body">
+            <span class="fas fa-dice"></span>
+            <small class="bql vi">Dice Game</small>
+          </a>
+        </li>
+
+
+            <li class="pa spve">
+          <a class="oy" href="/craft" title="Craft Game" data-toggle="tooltip" data-placement="right" data-container="body">
+            <span class="fas fa-wrench"></span>
+            <small class="bql vi">Craft Game</small>
+          </a>
+        </li>
+			             <li class="pa ag">
+          <a class="oy" title="Mines Game" href="/mines"  data-toggle="tooltip" data-placement="right" data-container="body">
+            <span class="fas fa-bomb"></span>
+            <small class="bql vi">Mines Game</small>
+          </a>
+        </li>
+
+      </ul>
+
+	     <div class="account12">
+	        <ul class="nav pb bqk zh">
+
+
+
+			<li style="position: absolute;bottom: 0;margin-left: 13px" class="pa">
+          <a class="oy" title="Онлайн"  data-toggle="tooltip" data-placement="right" data-container="body">
+            <span id="ondatag"><?=$onlinenow?></span>
+          </a>
+        </li>
+
+
+      </ul>
+			</div>
+    </div>
+
+  </nav>
+
+<div class="account12">
+   <div style="margin-top: 40px;margin-left: 110px; position: fixed; /* Set the navbar to fixed position */
+  top: 0; /* Position the navbar at the top of the page */
+  width: 100%; /* Full width */" class="bqn">
+      <?php if ( $_SESSION['login'] != 1 || empty($_SESSION['hash']) ){ ?>
+    <div class="bqo">
+<a href="/#openLogin"><button style="text-decoration: none;cursor: pointer;" class="authy">Авторизация</button></a>
+
+      </div>
+    <? }else{ ?>
+      <div class="bqo">
+        <h6 class="bqq">
+
+<a href="/profile" style="color: #434857;overflow: hidden; border: none; text-decoration: none"><span class="badge badge-primary" style="margin-bottom: 10px">ПРОФИЛЬ</span><?php if ( $prava == 1 ){ ?> <a href="/admin" style="color: #434857;overflow: hidden; border: none; text-decoration: none"><span class="badge badge-primary" style="background-color: red;margin-left: 10px">АДМИН-ПАНЕЛЬ</span></a> <? } ?>
+<br><?=$uname?></a></h6>
+    <h3 class="bqp money"><?=$balance?> coin</h3>
+      </div>
+<? } ?>
+	  </div>
+
+
+
+
+
+
+
+</div>
+
+
+
+	<style>
+		@media(max-width: 1466px) {
+			.view123 {
+				margin-top: 70px
+			}
+		}
+	</style>
+
+	<div class="view123">
+	<div class="content">
+		<div class="main-width">
+			<div class="bw">
+<div class="nav14">
+<center>
+<style>
+@media(min-width: 768px) {
+.wrapper {
+ width: 1100px;
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
+}
+@media(max-width: 768px) {
+.wrapper {
+
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
+}
+
+@media(min-width: 768px) {
+.colorown {
+  width: 940px;
+  border-radius: 10px;
+  height: 67px;
+display:inline-block;
+box-shadow: 0 0 10px rgba(39,45,57,0.5);
+position:relative;
+color: #f5f5f5;
+  margin: 10px;
+  padding-top: 1.75em;
+  font-weight: bold;
+}
+}
+
+@media(max-width: 768px) {
+.colorown {
+  width: 398px;
+  border-radius: 10px;
+  height: 107px;
+  padding: 10px;
+display:inline-block;
+position:relative;
+  margin: 10px;
+  color: #f5f5f5;
+  padding-top: 1.75em;
+  font-weight: bold;
+}
+}
+
+@media(min-width: 768px) {
+.color {
+  width: 300px;
+  border-radius: 10px;
+  height: 200px;
+display:inline-block;
+position:relative;
+  margin: 10px;
+  padding-top: 1.75em;
+  color: rgba(0,0,0,.7);
+  font-weight: bold;
+}
+}
+
+@media(max-width: 768px) {
+.color {
+  width: 190px;
+  border-radius: 10px;
+  height: 200px;
+display:inline-block;
+position:relative;
+  margin: 10px;
+  padding-top: 1.75em;
+  color: rgba(0,0,0,.7);
+  font-weight: bold;
+
+
+}
+}
+.color {
+
+  cursor: pointer;
+  transition: 0.15s linear;
+}
+.modes:hover .color:not(:hover) {
+    filter: blur(5px);
+	transition: 2s;
+}
+.color:hover {
+
+	-webkit-transform: scale(1.05);
+	transform: scale(1.05);
+
+
+}
+.color span {
+display:inline-block;
+position:absolute;
+top:160px;
+border-radius: 10px;
+right:15px;
+
+/* Оформление текста */
+color:#FFF;
+font-family:Arial, Helvetica, sans-serif;
+font-size:13px;
+transition: 0.5s ease;
+
+/* Фон */
+background-color:rgba(0,0,0,.4);
+padding:5px 15px;
+}
+
+.wrapper a:hover .color span {
+	padding:5px 18px;
+}
+
+.c1 {background-color: #7763eb;}
+.c2 {background-color: #397ce5;}
+.c3 {background-color: #397ce5;}
+.c4 {background-color: #31d268;}
+.c5 {background-color: #7401DF;}
+.c6 {background-color: #31d268;}
+.c7 {background-color: #7763eb;}
+.c8 {background-color: #397ce5;}
+.c9 {background-color: #31d268;}
+.cunic {background-color: #0065ff;}
+.c12 {background-color: #ffdb5b;}
+.c13 {background-color: #ffdb5b;}
+.c14 {background-color: #d21a1a;}
+.c15 {background-color: #272d39;}
+
+.wrapper a {
+  cursor: pointer;
+}
+</style>
+<br/><br/><br/>
+<div class="wrapper">
+
+ <!--<a href="<?=$vkgroup?>" target="blank"> <div style="overflow: hidden;" class="colorown c15"> ПРИСЫЛАЙ В НАШУ ГРУППУ ВК СКРИНШОТЫ ВЫВОДОВ С НАШЕГО САЙТА И ПОЛУЧАЙ БОНУСЫ <span style="margin-left: 10px;margin-top: -3px" class="badge badge-primary">ГРУППА ВК</span></div> </a>-->
+<div class="modes">
+ <a href="/wheel">  <div style="overflow: hidden;" class="color c2"><img style="margin-left: -10px;" width="325" src="/index/color.svg"><span>Wheel</span></div> </a>
+ <a href="/battle">  <div style="overflow: hidden;" class="color c8"><img style="margin-top: -14px;" width="180px" src="/index/pve.svg"><span>Battle</span></div></a>
+ <a href="/dice">  <div style="overflow: hidden;" class="color c3"><img style="margin-top: -14px;" width="180px" src="/index/dice.svg"><span>Dice</span></div></a>
+<a href="/craft">   <div style="overflow: hidden;" class="color c6"><img style="margin-top: -14px;" width="180px" src="/index/cube.svg"><span>Craft</span></div></a>
+<!-- <a onclick=" noty({
+    text: 'Данный режим игры находится в разработке',
+    type: 'error',
+    layout: 'bottomLeft',
+    timeout: 4000,
+    progressBar: true,
+    animation   : {
+      open : 'animated fadeInLeft',
+      close: 'animated fadeOutLeft'
+    }
+  });">  <div style="overflow: hidden;" class="color c4"><img style="margin-top: -14px;" width="180px" src="/index/coin.svg"><span>Coinflip</span></div></a>
+ <a onclick=" noty({
+    text: 'Данный режим игры находится в разработке',
+    type: 'error',
+    layout: 'bottomLeft',
+    timeout: 4000,
+    progressBar: true,
+    animation   : {
+      open : 'animated fadeInLeft',
+      close: 'animated fadeOutLeft'
+    }
+  });">  <div style="overflow: hidden;" class="color c9"><img style="margin-top: -14px;" width="180px" src="/index/slot-machine.svg"><span>777</span></div></a> -->
+
+ <a style="cursor: pointer;" href="/mines"> <div style="overflow: hidden;" class="color cunic"><img style="margin-top: -14px;" width="180px" src="/index/mine.svg"><span>Mines</span></div></a>
+
+</div>
+</div>
+</center>
+</div>
+</div>
+		</div>
+	</div>
+	</div>
+
+
+<div class="fixed-1">
+  <div style="background: #1c2028" class="fixed-chat">
+			<br>
+
+	<div class="hr-divider">
+
+	  <p style="margin-bottom: 0px;" class="hr-divider-content hr-divider-heading">
+
+<center>
+ <span>
+    Чат игроков
+ </span></center><br>
+
+
+
+</div>
+		<br>
+		<div class="messages">
+			<div class="scroller" style="height: 799px;overflow-y:scroll">
+        <?php
+             $query = ("SELECT * FROM `engmn_chat`");
+      $result = mysql_query($query);
+    while(($chat = mysql_fetch_array($result))){
+     $chatLogin = $chat['login'];
+     $mess = $chat['mess'];
+     $idUsersChat = $chat['id_users'];
+     $photo = $chat['photo'];
+
+     $p.='         <div class="item">
+          <div class="sub-heading clear">
+            <div class="avatar"><img src="'.$photo.'" alt=""></div>
+            <div class="name"  onclick="var u = $(this); $(\'.chat-input\').val(u.text() + \', \'); return false;"  style="margin-left: 15.5px">'.$chatLogin.'</span>  </div>
+            <div class="date"></div>
+          </div>
+
+          <div class="text">  <br>'.$mess.'</div>
+        </div>';
+    }
+    echo $p;
+        ?>
+				 			</div>
+		</div>
+
+		<div style="background: #1c2028" class="send-form">
+			<div style="border: 3px solid #333;background: #1c2028;" class="chat-smiles">
+				<div class="chat-smiles-box">
+					<div onclick="$('#chatinput').val('😀');" class="chat-smile">😀</div>
+					<div onclick="$('#chatinput').val('😂');" class="chat-smile">😂</div>
+					<div onclick="$('#chatinput').val('😄');" class="chat-smile">😄</div>
+					<div onclick="$('#chatinput').val('😅');" class="chat-smile">😅</div>
+					<div onclick="$('#chatinput').val('😆');" class="chat-smile">😆</div>
+					<div onclick="$('#chatinput').val('😉');" class="chat-smile">😉</div>
+					<div onclick="$('#chatinput').val('😋');" class="chat-smile">😋</div>
+					<div onclick="$('#chatinput').val('😎');" class="chat-smile">😎</div>
+					<div onclick="$('#chatinput').val('😍');" class="chat-smile">😍</div>
+					<div onclick="$('#chatinput').val('😘');" class="chat-smile">😘</div>
+					<div onclick="$('#chatinput').val('😐');" class="chat-smile">😐</div>
+					<div onclick="$('#chatinput').val('😶');" class="chat-smile">😶</div>
+					<div onclick="$('#chatinput').val('😣');" class="chat-smile">😣</div>
+					<div onclick="$('#chatinput').val('😫');" class="chat-smile">😫</div>
+					<div onclick="$('#chatinput').val('😜');" class="chat-smile">😜</div>
+					<div onclick="$('#chatinput').val('😓');" class="chat-smile">😓</div>
+					<div onclick="$('#chatinput').val('😧');" class="chat-smile">😧</div>
+				</div>
+			</div>
+			<input id="chatinput" type="text" class="chat-input" placeholder="Введите сообщение">
+			<!-- <a style="margin-right: 5px" class="btn-emoji"><i class="far fa-smile"></i></a> -->
+			<a style="margin-top: -10px" onClick="addChat();" class="btn-send"><i class="fa fa-paper-plane"></i></a>
+		</div>
+		</div>
+
+			</div>
+
+
+
+
+
+
+						</div>
+
+
+ <script src="/js/popper.min.js"></script>
+ <script src="/js/tablesorter.min.js"></script>
+ <script src="/js/toolkit.js"></script>
+ <script src="/js/application.js"></script>
+
+
+
+
+</body>
+</html>
